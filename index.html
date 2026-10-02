@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IATS Capstone 2.0 Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --primary: #1e3a8a;
+            --primary-light: #eff6ff;
+            --ss-bg: #dcfce7;
+            --ss-text: #166534;
+            --ns-bg: #e0f2fe;
+            --ns-text: #075985;
+            --spare-bg: #fef3c7;
+            --spare-text: #92400e;
+            --term-header-bg: #f1f5f9;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            padding: 2rem;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            background: var(--bg-card);
+            padding: 1.5rem 2rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .title-area h1 {
+            font-size: 1.75rem;
+            color: var(--primary);
+            font-weight: 800;
+        }
+
+        .title-area p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-top: 4px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            background: #e2e8f0;
+            padding: 4px;
+            border-radius: 12px;
+        }
+
+        .tab-btn {
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: transparent;
+            color: var(--text-muted);
+        }
+
+        .tab-btn.active {
+            background: var(--bg-card);
+            color: var(--primary);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .search-box input {
+            padding: 0.6rem 1.2rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            width: 320px;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        .table-container {
+            background: var(--bg-card);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--primary);
+            color: #ffffff;
+            padding: 1.1rem 1rem;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        td {
+            padding: 1.1rem 1rem;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.925rem;
+            vertical-align: top;
+        }
+
+        tr.term-row td {
+            background-color: var(--term-header-bg);
+            font-weight: 800;
+            color: var(--primary);
+            font-size: 1rem;
+            letter-spacing: 0.05em;
+            border-top: 2px solid var(--border);
+            border-bottom: 2px solid var(--border);
+        }
+
+        tr.spare-row {
+            background-color: #fffbeb;
+        }
+
+        tr:hover:not(.term-row) {
+            background-color: #f8fafc;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.625rem;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .badge-ss {
+            background-color: var(--ss-bg);
+            color: var(--ss-text);
+        }
+
+        .badge-ns {
+            background-color: var(--ns-bg);
+            color: var(--ns-text);
+        }
+
+        .badge-spare {
+            background-color: var(--spare-bg);
+            color: var(--spare-text);
+        }
+
+        .week-tag {
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .phase-tag {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        ul li {
+            position: relative;
+            padding-left: 1.2rem;
+            margin-bottom: 0.35rem;
+        }
+
+        ul li::before {
+            content: "•";
+            color: var(--primary);
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        @media (max-width: 900px) {
+            body { padding: 1rem; }
+            .table-container { overflow-x: auto; }
+            .controls { flex-direction: column; align-items: stretch; }
+            .search-box input { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div class="title-area">
+            <h1>IATS Capstone 2.0 Facilitator Dashboard</h1>
+            <p>22-Week Annual Schedule per Grade (10 Curriculum Weeks + 1 Spare Week per Term)</p>
+        </div>
+    </header>
+
+    <div class="controls">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="filterGrade('juniors')">Juniors (Grade 1)</button>
+            <button class="tab-btn" onclick="filterGrade('wheelers')">Wheelers (Grade 2)</button>
+            <button class="tab-btn" onclick="filterGrade('seniors')">Seniors (Grade 3)</button>
+        </div>
+
+        <div class="search-box">
+            <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search week, topic, deliverable...">
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 14%;">Phase</th>
+                    <th style="width: 6%;">Week</th>
+                    <th style="width: 10%;">Session</th>
+                    <th style="width: 22%;">Topic & Content</th>
+                    <th style="width: 24%;">In-Class Activity</th>
+                    <th style="width: 24%;">Student/Instructor Deliverables</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+const data = {
+    juniors: [
+        // TERM 1
+        { term: "FIRST TERM (WEEKS 1–11)" },
+        { phase: "01. Empathy & Challenge", week: "W1", session: "1.01 (SS)", topic: "Introduction & Challenge Review", activity: "Welcome students, explain team formation stages, introduce challenge, review timeline.", deliverables: ["Form teams (5 students per team)", "Complete KWL Chart (Worksheet 101)", "Submit Exit Ticket"] },
+        { phase: "01. Empathy & Challenge", week: "W2", session: "1.02 (SS)", topic: "Design Thinking Focus: Empathy", activity: "Explain empathy phase and data collection tools (observations, interviews, surveys).", deliverables: ["Define target user profile", "Complete data sheet (Worksheet 102)", "Prepare research questions"] },
+        { phase: "01. Empathy & Challenge", week: "W3", session: "1.03 (SS)", topic: "Engaging with User Needs & SDGs", activity: "Connect problem to SDGs and introduce concept mapping.", deliverables: ["Complete Empathy Map (Worksheet 103)", "Link project to at least 3 SDGs", "Update team portfolio"] },
+        { phase: "01. Empathy & Challenge", week: "W4", session: "1.04 (NS)", topic: "Collecting & Organizing User Needs", activity: "Collect field data and create an Affinity Map to categorize user needs.", deliverables: ["Complete Affinity Map (Worksheet 104)", "Document structured needs in portfolio"] },
+        { phase: "02. Ideation & SCAMPER", week: "W5", session: "1.05 (SS)", topic: "Researching Solutions & Ideation", activity: "Research prior solutions and apply key competencies to brainstorm initial ideas.", deliverables: ["Complete Idea Generation Sheet (Worksheet 105)", "Document references in APA Format", "Complete Journal 1"] },
+        { phase: "02. Ideation & SCAMPER", week: "W6", session: "1.06 (SS)", topic: "Refining Problem Statement & Prior Solutions", activity: "Refine problem statement with precision and prepare for Panel Review.", deliverables: ["Complete Worksheets 106-1 & 106-2", "Formulate precise problem statement & requirements"] },
+        { phase: "02. Ideation & SCAMPER", week: "W7", session: "1.07 (SS)", topic: "Creative Solutions & SCAMPER", activity: "Apply brainstorming rules and SCAMPER technique to adapt solution concepts.", deliverables: ["Complete Worksheets 107-1 to 107-4", "Document modified ideas in portfolio"] },
+        { phase: "02. Ideation & SCAMPER", week: "W8", session: "1.08 (NS)", topic: "Refining Solutions & Panel Prep", activity: "Filter ideas for final solution and prepare presentation materials.", deliverables: ["Complete Worksheets 108-1 & 108-2", "Submit Panel Review Deliverables (Dimensions + Materials + Pitch)"] },
+        { phase: "03. Prototyping Prep", week: "W9", session: "1.09 (SS)", topic: "Project Plan & Prototype Design", activity: "Establish project plan, assign roles, and conduct Fishbowl discussion.", deliverables: ["Complete Worksheets 109-1 & 109-2", "Document Section II in portfolio"] },
+        { phase: "03. Prototyping Prep", week: "W10", session: "1.10 (NS)", topic: "Refining Solutions & Building Prototypes", activity: "Watch prototyping video, prepare technical drawings, review simulation checklist.", deliverables: ["Complete Worksheets 110-1 & 110-2", "Fill out Journal 2 & start construction"] },
+        { phase: "04. Term 1 Buffer", week: "W11", session: "SPARE WEEK 1", topic: "Mid-Year Buffer & Panel Catch-up", activity: "Flexibility week for mid-term exams, portfolio grading, panel feedback fixes, or unexpected delays.", deliverables: ["Complete all pending Journal entries & portfolio updates", "Finalize Mid-Year evaluation"] },
+
+        // TERM 2
+        { term: "SECOND TERM (WEEKS 12–22)" },
+        { phase: "05. Prototyping & Testing", week: "W12", session: "1.11 (SS)", topic: "Testing Prototypes", activity: "Apply Concentric Circles strategy to test prototype feasibility, tools, and cost.", deliverables: ["Attach photos to Worksheets 111-1 & 111-2", "Document test results & justifications"] },
+        { phase: "05. Prototyping & Testing", week: "W13", session: "1.12 (NS)", topic: "Prototype Refinement & Strategic Decisions", activity: "Make strategic financial decisions based on budget constraints and timeline.", deliverables: ["Complete Worksheets 112-1 to 112-5", "Document Section V in portfolio"] },
+        { phase: "06. Business Model Canvas", week: "W14", session: "1.13 (NS)", topic: "Testing Prototypes & Expert Feedback", activity: "Present prototypes to industry experts for feedback and draft Value Proposition.", deliverables: ["Complete Worksheets 113-1 & 113-2", "Record expert feedback & prototype adjustments"] },
+        { phase: "06. Business Model Canvas", week: "W15", session: "1.14 (NS)", topic: "Testing & BMC 3 Cs Analysis", activity: "Explain Customer, Cost, and Competitor elements (3 Cs) aligned with prototype.", deliverables: ["Complete Worksheets 114-1 to 114-3", "Outline initial Display Board layout (Worksheet 114-4)"] },
+        { phase: "06. Business Model Canvas", week: "W16", session: "1.15 (SS)", topic: "Testing Prototypes & Refining BMC", activity: "Explain left side of BMC (Key Partners, Activities, Resources) & error rates.", deliverables: ["Complete Worksheets 115-1 to 115-3", "Document test readings in APA Format"] },
+        { phase: "06. Business Model Canvas", week: "W17", session: "1.16 (NS)", topic: "Refining Prototypes & Storytelling", activity: "Complete all 9 blocks of BMC and practice pitch presentation.", deliverables: ["Fill out complete BMC (Worksheet 116)", "Document Section III & complete Journal 3"] },
+        { phase: "07. EXPO Readiness", week: "W18", session: "1.17 (SS)", topic: "Iterative Design & Storytelling", activity: "Watch iterative design video, analyze test data, refine story.", deliverables: ["Complete Worksheets 117-1 & 117-2", "Document Section IV in portfolio"] },
+        { phase: "07. EXPO Readiness", week: "W19", session: "1.18 (NS)", topic: "Finalizing Display Boards", activity: "Complete Methods & Testing on poster board, finalize BMC financial structure.", deliverables: ["Write learning outcome reflection paragraphs", "Submit completed Display Board"] },
+        { phase: "07. EXPO Readiness", week: "W20", session: "1.19 (SS)", topic: "Storytelling & Presentation Skills", activity: "Train on persuasive speech, body language, conduct peer mock pitches.", deliverables: ["Complete Worksheets 119-1 & 119-2", "Finalize Communication section & Journal 4"] },
+        { phase: "07. EXPO Readiness", week: "W21", session: "1.20 (NS)", topic: "Final Preparations for Capstone EXPO", activity: "Conduct final Mock EXPO to practice presentation techniques.", deliverables: ["Complete Worksheets 120-1 & 120-2", "Final Submission: Display Board + Working Prototype + Portfolio"] },
+        { phase: "08. Term 2 Buffer", week: "W22", session: "SPARE WEEK 2", topic: "Final EXPO Wrap-up & Year-End Evaluation", activity: "Post-EXPO feedback, final grading, portfolio archiving, and student reflections.", deliverables: ["Final Portfolio submission and grade recording", "Team closeout reflections"] }
+    ],
+    wheelers: [
+        // TERM 1
+        { term: "FIRST TERM (WEEKS 1–11)" },
+        { phase: "01. Advanced Empathy", week: "W1", session: "2.01 (SS)", topic: "Introduction & Challenge Review", activity: "Review prior concepts, organize teams (5 students), distribute challenge booklet.", deliverables: ["Assign team roles and codes", "Complete Worksheet 201 (KWL)", "Submit Exit Ticket"] },
+        { phase: "01. Advanced Empathy", week: "W2", session: "2.02 (SS)", topic: "Empathy & Advanced Data Collection", activity: "Teach advanced user research methodologies (interviews, quantitative surveys).", deliverables: ["Create target User Profile", "Complete Worksheet 202"] },
+        { phase: "01. Advanced Empathy", week: "W3", session: "2.03 (SS)", topic: "User Needs Analysis & SDGs", activity: "Analyze user data patterns and map needs to at least 5 UN SDGs.", deliverables: ["Complete Worksheet 203", "Construct advanced Affinity Map"] },
+        { phase: "01. Advanced Empathy", week: "W4", session: "2.04 (NS)", topic: "Advanced Methods for User Needs", activity: "Conduct field data collection and assess source credibility.", deliverables: ["Complete Worksheet 204", "Document sources in APA Format"] },
+        { phase: "02. Solution Requirements", week: "W5", session: "2.05 (SS)", topic: "Researching Solutions & Plan Design", activity: "Analyze industrial solutions and establish Solution Requirements.", deliverables: ["Complete Worksheet 205", "Complete Journal 1"] },
+        { phase: "02. Solution Requirements", week: "W6", session: "2.06 (NS)", topic: "Refining Solutions & Prototype Planning", activity: "Draft solution summary and dimensional sketch for Panel Review.", deliverables: ["Complete Worksheets 206-1 & 206-2", "Prepare presentation points"] },
+        { phase: "02. Solution Requirements", week: "W7", session: "2.07 (SS)", topic: "Creative Solutions & SCAMPER", activity: "Apply SCAMPER techniques to refine top concepts & establish criteria.", deliverables: ["Complete Worksheets 207-1 to 207-4", "Define selection criteria"] },
+        { phase: "02. Solution Requirements", week: "W8", session: "2.08 (NS)", topic: "Refining Solutions & Presentation Prep", activity: "Select final evidence-based solution and finalize panel presentation.", deliverables: ["Complete Worksheets 208-1 & 208-2", "Submit Panel Review Deliverables"] },
+        { phase: "03. Advanced Prototyping", week: "W9", session: "2.09 (SS)", topic: "Prototype Design & Presentation", activity: "Build execution plan and create digital 3D/diagrammatic representations.", deliverables: ["Complete Worksheets 209-1 & 209-2", "Document Section II in portfolio"] },
+        { phase: "03. Advanced Prototyping", week: "W10", session: "2.10 (NS)", topic: "Refining Solutions & Building Prototypes", activity: "Watch Prototyping video, evaluate simulation checklist, test materials.", deliverables: ["Complete Worksheets 210-1 & 210-2", "Fill out Journal 2"] },
+        { phase: "04. Term 1 Buffer", week: "W11", session: "SPARE WEEK 1", topic: "Mid-Year Buffer & Panel Catch-up", activity: "Flexibility week for mid-term exams, portfolio grading, panel feedback fixes.", deliverables: ["Complete all pending Journal entries", "Finalize Mid-Year evaluation"] },
+
+        // TERM 2
+        { term: "SECOND TERM (WEEKS 12–22)" },
+        { phase: "05. Testing & Refining", week: "W12", session: "2.11 (SS)", topic: "Testing & Refining Prototype Design", activity: "Evaluate prototype viability, accuracy, and cost via Concentric Circles.", deliverables: ["Attach photos to Worksheets 211-1 & 211-2", "Document testing plan in portfolio"] },
+        { phase: "05. Testing & Refining", week: "W13", session: "2.12 (NS)", topic: "Prototype Refinement & Decisions", activity: "Make budget tradeoffs between provided materials and purchased components.", deliverables: ["Complete Worksheets 212-1 to 212-5", "Document Section V in portfolio"] },
+        { phase: "06. Integrated BMC", week: "W14", session: "2.13 (NS)", topic: "Expert Feedback & BMC Intro", activity: "Present prototypes to domain experts and formulate Value Proposition.", deliverables: ["Complete Worksheets 213-1 & 213-2", "Log expert feedback"] },
+        { phase: "06. Integrated BMC", week: "W15", session: "2.14 (NS)", topic: "Testing Prototypes & BMC 3 Cs", activity: "Align prototype specs with the 3 Cs (Customer, Cost, Competitors) of BMC.", deliverables: ["Complete Worksheets 214-1 to 214-3", "Draft initial Display Board (Worksheet 214-4)"] },
+        { phase: "06. Integrated BMC", week: "W16", session: "2.15 (SS)", topic: "Testing Prototypes & Refining BMC", activity: "Record quantitative test data and error percentages while expanding BMC.", deliverables: ["Complete Worksheets 215-1 to 215-3", "Document test data in APA format"] },
+        { phase: "06. Integrated BMC", week: "W17", session: "2.16 (NS)", topic: "Refining Prototypes & Storytelling", activity: "Connect all 9 blocks of BMC and practice pitch presentations using Rubric.", deliverables: ["Fill out complete BMC (Worksheet 216)", "Document test results & complete Journal 3"] },
+        { phase: "07. Final EXPO Readiness", week: "W18", session: "2.17 (SS)", topic: "Iterative Design & Storytelling", activity: "Analyze testing metrics, execute iterative design improvements, refine pitch.", deliverables: ["Complete Worksheets 217-1 & 217-2", "Document Section IV in portfolio"] },
+        { phase: "07. Final EXPO Readiness", week: "W19", session: "2.18 (NS)", topic: "Finalizing Display Boards & Prep", activity: "Finalize poster board testing charts, BMC revenue structure, detail outcomes.", deliverables: ["Write learning outcome reflection paragraphs", "Submit final Display Board"] },
+        { phase: "07. Final EXPO Readiness", week: "W20", session: "2.19 (SS)", topic: "Storytelling & Communication Skills", activity: "Conduct peer pitch presentations focusing on persuasive speech and body language.", deliverables: ["Complete Worksheets 219-1 & 219-2", "Fill out Journal 4"] },
+        { phase: "07. Final EXPO Readiness", week: "W21", session: "2.20 (NS)", topic: "Final Preparations for Capstone EXPO", activity: "Run full Mock EXPO rehearsals to prepare students for public panels.", deliverables: ["Complete Worksheets 220-1 & 220-2", "Final Submission: Display Board + Prototype + Portfolio"] },
+        { phase: "08. Term 2 Buffer", week: "W22", session: "SPARE WEEK 2", topic: "Final EXPO Wrap-up & Year-End Evaluation", activity: "Post-EXPO feedback, final grading, portfolio archiving, and reflections.", deliverables: ["Final Portfolio submission", "Team closeout reflections"] }
+    ],
+    seniors: [
+        // TERM 1
+        { term: "FIRST TERM (WEEKS 1–11)" },
+        { phase: "01. Dual-Track Direction", week: "W1", session: "3.01 (SS)", topic: "Early Review Feedback & Challenge", activity: "Study Dyson story & divide teams into tracks: Track 1 (Approved Plan), Track 2 (New Concept via Dreams & Gripes).", deliverables: ["Complete Worksheet 301 (Dreams & Gripes)", "Formulate 'How Might We' questions", "Submit Revised Timeline Document"] },
+        { phase: "01. Dual-Track Direction", week: "W2", session: "3.02 (NS)", topic: "Team Collaboration & Problem Analysis", activity: "Unstructured student-led teamwork to analyze stakeholders, root causes, and context.", deliverables: ["Complete Worksheet 302", "Document team role distribution"] },
+        { phase: "02. Tri-Fold Balance", week: "W3", session: "3.03 (SS)", topic: "Collaborative Work & Iteration", activity: "Review team dynamics video and construct detailed testing or rapid prototyping plans.", deliverables: ["Complete Worksheet 303 (Timeline)", "Document sources in APA Format"] },
+        { phase: "02. Tri-Fold Balance", week: "W4", session: "3.04 (NS)", topic: "Team Collaboration & Dynamics", activity: "Unstructured team session to address internal communication challenges & monitor tasks.", deliverables: ["Complete Worksheet 304 (Progress Tracker)", "Document weekly milestones"] },
+        { phase: "02. Tri-Fold Balance", week: "W5", session: "3.05 (SS)", topic: "Feasibility, Viability, Desirability", activity: "Evaluate project concepts across Feasibility, Viability, and Desirability balance.", deliverables: ["Draw 3-ring balance diagram", "Present concept balance justification", "Establish testing plan"] },
+        { phase: "03. Advanced Requirements", week: "W6", session: "3.06 (NS)", topic: "Technical Specs & Material Sourcing", activity: "Define strict technical constraints, engineering tolerances, and component lists.", deliverables: ["Technical specification sheet", "Component sourcing plan"] },
+        { phase: "03. Advanced Requirements", week: "W7", session: "3.07 (SS)", topic: "Senior Panel Review Preparation", activity: "Consolidate preliminary research, engineering formulas, and risk matrices.", deliverables: ["Draft Panel pitch deck", "Risk assessment matrix"] },
+        { phase: "03. Advanced Requirements", week: "W8", session: "3.08 (NS)", topic: "Senior Panel Defense", activity: "Formal presentation defense before technical and industrial judges.", deliverables: ["Panel Review Submission (Technical design + budget + pitch)"] },
+        { phase: "04. Prototyping Phase 1", week: "W9", session: "3.09 (SS)", topic: "Initial Prototype Assembly", activity: "Begin physical/digital construction based on panel recommendations.", deliverables: ["Assembly log in Portfolio", "Initial prototype framework"] },
+        { phase: "04. Prototyping Phase 1", week: "W10", session: "3.10 (NS)", topic: "Mid-Year Design Audit", activity: "Internal quality review and performance bench-testing.", deliverables: ["Mid-year prototype audit report", "Journal 2 complete"] },
+        { phase: "05. Term 1 Buffer", week: "W11", session: "SPARE WEEK 1", topic: "Mid-Year Buffer & Panel Fixes", activity: "Buffer week for mid-term exams, redesigning unapproved components, and portfolio grading.", deliverables: ["Panel remediation report (if needed)", "Mid-term portfolio sign-off"] },
+
+        // TERM 2
+        { term: "SECOND TERM (WEEKS 12–22)" },
+        { phase: "06. Advanced Testing", week: "W12", session: "3.11 (SS)", topic: "System Integration & Rigorous Testing", activity: "Execute multi-scenario testing regimes and calculate error rates.", deliverables: ["Quantitative test data logs", "APA-formatted analysis section"] },
+        { phase: "06. Advanced Testing", week: "W13", session: "3.12 (NS)", topic: "Optimizing Functionality", activity: "Address mechanical/software bottlenecks discovered during testing.", deliverables: ["Optimization logs", "Updated technical schematics"] },
+        { phase: "07. Enterprise BMC", week: "W14", session: "3.14 (NS)", topic: "Industrial Feasibility & BMC Modeling", activity: "Refine full BMC including supply chain, manufacturing scale, and unit economics.", deliverables: ["Full Senior BMC sheet", "Financial feasibility analysis"] },
+        { phase: "07. Enterprise BMC", week: "W15", session: "3.15 (SS)", topic: "Industry Expert Review", activity: "Conduct consultation sessions with external sector experts for validation.", deliverables: ["Expert feedback logs", "Design iteration sheet"] },
+        { phase: "08. Senior EXPO Prep", week: "W16", session: "3.16 (NS)", topic: "Display Board & Scientific Poster", activity: "Design high-grade academic posters matching EXPO Rubric criteria.", deliverables: ["Display Board draft layout", "Journal 3 complete"] },
+        { phase: "08. Senior EXPO Prep", week: "W17", session: "3.17 (SS)", topic: "Iterative Pitch Refinement", activity: "Refine technical storytelling to communicate complex engineering simply.", deliverables: ["Pitch deck v2", "Peer evaluation sheets"] },
+        { phase: "08. Senior EXPO Prep", week: "W18", session: "3.18 (NS)", topic: "Final Prototype Calibration", activity: "Final calibration of hardware/software for live demonstration at EXPO.", deliverables: ["Final working prototype lock", "Completed Display Board"] },
+        { phase: "08. Senior EXPO Prep", week: "W19", session: "3.19 (SS)", topic: "Senior Presentation Rehearsal", activity: "Mock presentations simulating harsh judge Q&A scenarios.", deliverables: ["Mock review rubric scorecards", "Journal 4 complete"] },
+        { phase: "08. Senior EXPO Prep", week: "W20", session: "3.20 (NS)", topic: "Senior Capstone EXPO Execution", activity: "Formal presentation and evaluation at the annual Capstone EXPO.", deliverables: ["Final Submission: Working Prototype + Board + Senior Portfolio"] },
+        { phase: "09. Graduation Audit", week: "W21", session: "3.21 (SS)", topic: "Capstone Senior Defense & Audit", activity: "Final academic audit and grade sign-off (15% of Senior total grade).", deliverables: ["Signed Capstone Grade Sheet", "Archived digital portfolio"] },
+        { phase: "10. Term 2 Buffer", week: "W22", session: "SPARE WEEK 2", topic: "Final Year-End Buffer & Archiving", activity: "Buffer week for senior graduation clearances, final project archiving, and awards.", deliverables: ["Project digital repository upload", "Final exit survey"] }
+    ]
+};
+
+let currentGrade = 'juniors';
+
+function renderTable(grade) {
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = '';
+
+    data[grade].forEach(row => {
+        if (row.term) {
+            const tr = document.createElement('tr');
+            tr.className = 'term-row';
+            tr.innerHTML = `<td colspan="6">${row.term}</td>`;
+            tbody.appendChild(tr);
+            return;
+        }
+
+        const isSS = row.session.includes('SS');
+        const isSpare = row.session.includes('SPARE');
+        
+        let badgeClass = 'badge-ns';
+        if (isSS) badgeClass = 'badge-ss';
+        if (isSpare) badgeClass = 'badge-spare';
+        
+        const tr = document.createElement('tr');
+        if (isSpare) tr.className = 'spare-row';
+
+        tr.innerHTML = `
+            <td><span class="phase-tag">${row.phase}</span></td>
+            <td class="week-tag">${row.week}</td>
+            <td><span class="badge ${badgeClass}">${row.session}</span></td>
+            <td><strong>${row.topic}</strong></td>
+            <td>${row.activity}</td>
+            <td>
+                <ul>
+                    ${row.deliverables.map(item => `<li>${item}</li>`).join('')}
+                </ul>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+function filterGrade(grade) {
+    currentGrade = grade;
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    renderTable(grade);
+}
+
+function searchTable() {
+    const input = document.getElementById('searchInput').value.toLowerCase();
+    const rows = document.querySelectorAll('#tableBody tr:not(.term-row)');
+
+    rows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        row.style.display = text.includes(input) ? '' : 'none';
+    });
+}
+
+renderTable('juniors');
+</script>
+
+</body>
+</html>
